@@ -1,0 +1,10 @@
+[package]
+name = "finite-model"
+version = "0.1.0"
+authors = ["Curtis Millar <curtis@curtism.me>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+finite-model-derive = { path = "./derive" }
