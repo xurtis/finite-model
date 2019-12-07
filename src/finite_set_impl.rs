@@ -20,6 +20,42 @@ macro_rules! numeric_impls {
 
 numeric_impls![u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize];
 
+/// An iterator over option values
+pub struct OptionIter<I: FiniteSet>(Option<I::Iter>);
+
+impl<I: FiniteSet> Default for OptionIter<I> {
+    fn default() -> Self {
+        OptionIter(Some(I::finite_set()))
+    }
+}
+
+impl<I: FiniteSet> Iterator for OptionIter<I> {
+    type Item = Option<I>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let (curr, next) = match self.0.take() {
+            Some(mut iter) => {
+                match iter.next() {
+                    Some(next) => (Some(Some(next)), Some(iter)),
+                    None => (Some(None), None),
+                }
+            }
+            None => (None, None),
+        };
+
+        self.0 = next;
+        curr
+    }
+}
+
+impl<I: FiniteSet> FiniteSet for Option<I> {
+    type Iter = OptionIter<I>;
+
+    fn finite_set() -> Self::Iter {
+        OptionIter::default()
+    }
+}
+
 /// An iterator over the true and false values
 pub struct BoolIter(Option<bool>);
 
